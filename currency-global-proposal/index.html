@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Currency Global × Milo — Executive summary</title>
+<meta name="description" content="A short follow-up to today's conversation: the sandbox path, the queries to test, and what happens in the next four weeks." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #0B2545;
+    --navy-mid: #13315C;
+    --navy-light: #1E4079;
+    --gold: #D4A24C;
+    --gold-soft: #E8C988;
+    --coral: #E63946;
+    --cream: #F9F4EA;
+    --paper: #FCFAF5;
+    --ink: #0A0A0A;
+    --grey: #5A6072;
+    --line: #E5DCC7;
+    --shadow: 8px 8px 0 var(--navy);
+    --shadow-sm: 4px 4px 0 var(--navy);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.55;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .display { font-family: 'Fraunces', serif; font-weight: 800; letter-spacing: -0.02em; }
+
+  /* progress */
+  .progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--gold); z-index: 1000; transition: width 0.1s linear; }
+
+  /* topbar */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: var(--cream); border-bottom: 2px solid var(--navy);
+    padding: 14px 32px; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: transform 0.3s ease;
+  }
+  .topbar.hidden { transform: translateY(-100%); }
+  .topbar-left { display: flex; align-items: center; gap: 14px; font-weight: 700; }
+  .topbar-brand { font-family: 'Fraunces', serif; font-weight: 900; font-size: 20px; color: var(--navy); }
+  .topbar-x { color: var(--grey); font-weight: 400; }
+  .topbar-milo { font-family: 'Fraunces', serif; font-weight: 900; font-style: italic; font-size: 20px; color: var(--gold); }
+  .topbar-right { display: flex; align-items: center; gap: 22px; font-size: 13px; color: var(--ink); }
+  .topbar-date { padding: 6px 12px; background: var(--navy); color: var(--cream); border-radius: 99px; font-weight: 600; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+  @media (max-width: 720px) { .topbar { padding: 10px 16px; } .topbar-right { font-size: 11px; gap: 10px; } }
+
+  /* hero */
+  .hero {
+    min-height: 92vh; position: relative; overflow: hidden;
+    background: var(--navy); color: var(--cream);
+    padding: 130px 32px 70px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(212,162,76,0.18) 1px, transparent 0);
+    background-size: 36px 36px; pointer-events: none;
+  }
+  .orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; pointer-events: none; }
+  .orb-1 { width: 380px; height: 380px; background: var(--gold); top: -100px; right: -60px; animation: float1 20s ease-in-out infinite; }
+  .orb-2 { width: 300px; height: 300px; background: var(--coral); bottom: -80px; left: -60px; opacity: 0.25; animation: float2 24s ease-in-out infinite; }
+  @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-40px, 30px); } }
+  @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(40px, -30px); } }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 16px; background: var(--cream); color: var(--navy);
+    border-radius: 99px; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    align-self: flex-start; position: relative; z-index: 2;
+  }
+  .hero-tag::before { content: ""; width: 8px; height: 8px; background: var(--coral); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } }
+
+  .hero-body { position: relative; z-index: 2; max-width: 1200px; margin: 28px auto 0; width: 100%; }
+  .hero-h1 {
+    font-family: 'Fraunces', serif; font-weight: 900;
+    font-size: clamp(44px, 7.5vw, 96px); line-height: 0.98; letter-spacing: -0.035em;
+    color: var(--cream);
+  }
+  .hero-h1 .gold { color: var(--gold); font-style: italic; }
+  .hero-h1 .underline {
+    display: inline-block; background: var(--gold); color: var(--navy);
+    padding: 2px 14px; border-radius: 8px; font-style: normal; transform: rotate(-1deg);
+  }
+  .hero-sub {
+    margin-top: 26px; max-width: 680px; font-size: clamp(16px, 1.5vw, 19px);
+    color: rgba(249,244,234,0.82); line-height: 1.55;
+  }
+  .hero-sub strong { color: var(--cream); font-weight: 700; }
+
+  .hero-stats {
+    margin-top: 48px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  }
+  @media (max-width: 880px) { .hero-stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    background: var(--cream); color: var(--navy);
+    padding: 20px 22px 18px; border: 3px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    transform: rotate(-0.4deg);
+  }
+  .stat:nth-child(2) { background: var(--gold); transform: rotate(0.5deg); }
+  .stat:nth-child(3) { background: var(--cream); transform: rotate(-0.5deg); }
+  .stat:nth-child(4) { background: var(--coral); color: var(--cream); transform: rotate(0.4deg); }
+  .stat-num { font-family: 'Fraunces', serif; font-weight: 900; font-size: 36px; line-height: 1; }
+  .stat-label { margin-top: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .hero-meta {
+    margin-top: 48px; display: flex; gap: 22px; flex-wrap: wrap;
+    font-size: 13px; color: rgba(249,244,234,0.65); position: relative; z-index: 2;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 8px; }
+  .hero-meta .dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+  .hero-meta strong { color: var(--cream); }
+
+  /* generic */
+  section { padding: 88px 32px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .eyebrow {
+    display: inline-block; padding: 6px 14px;
+    background: var(--navy); color: var(--cream);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    border-radius: 99px; margin-bottom: 18px;
+  }
+  .eyebrow.gold { background: var(--gold); color: var(--navy); }
+  .eyebrow.coral { background: var(--coral); }
+  .section-title {
+    font-family: 'Fraunces', serif; font-weight: 900;
+    font-size: clamp(36px, 5vw, 64px); line-height: 1.02; letter-spacing: -0.03em;
+    color: var(--navy); margin-bottom: 18px;
+  }
+  .section-title .italic { font-style: italic; color: var(--coral); }
+  .section-lead { font-size: clamp(16px, 1.5vw, 19px); max-width: 720px; color: var(--ink); line-height: 1.55; }
+  .section-lead strong { color: var(--navy); }
+
+  /* confirmed banner */
+  .confirmed {
+    background: var(--cream); border-bottom: 3px solid var(--navy);
+    padding: 56px 32px;
+  }
+  .confirmed-wrap { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 800px) { .confirmed-wrap { grid-template-columns: 1fr; } }
+  .conf-card {
+    background: var(--paper); border: 3px solid var(--navy); padding: 28px;
+    box-shadow: var(--shadow-sm); display: flex; gap: 20px;
+  }
+  .conf-tick {
+    flex-shrink: 0; width: 48px; height: 48px; background: var(--gold);
+    border: 3px solid var(--navy); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 26px; color: var(--navy);
+  }
+  .conf-card h4 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 20px; color: var(--navy); margin-bottom: 6px; }
+  .conf-card p { font-size: 14px; color: var(--ink); line-height: 1.55; }
+  .conf-card p strong { color: var(--navy); }
+  .conf-card .sub { margin-top: 8px; font-size: 12px; color: var(--grey); font-style: italic; }
+
+  /* recap */
+  .recap { background: var(--paper); }
+  .recap-grid {
+    margin-top: 44px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+  @media (max-width: 900px) { .recap-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .recap-grid { grid-template-columns: 1fr; } }
+  .rcard {
+    background: var(--cream); border: 3px solid var(--navy); padding: 22px;
+    box-shadow: var(--shadow-sm);
+  }
+  .rcard:nth-child(2) { transform: rotate(0.3deg); }
+  .rcard:nth-child(odd) { transform: rotate(-0.3deg); }
+  .rcard-num { font-family: 'Fraunces', serif; font-weight: 900; font-size: 12px; color: var(--coral); letter-spacing: 0.1em; }
+  .rcard-title { font-family: 'Fraunces', serif; font-weight: 800; font-size: 19px; color: var(--navy); margin-top: 6px; line-height: 1.2; }
+  .rcard-body { margin-top: 10px; font-size: 13px; line-height: 1.55; color: var(--ink); }
+
+  /* queries section */
+  .queries { background: var(--navy); color: var(--cream); position: relative; overflow: hidden; }
+  .queries::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(212,162,76,0.12) 1px, transparent 0);
+    background-size: 30px 30px;
+  }
+  .queries .section-title { color: var(--cream); position: relative; }
+  .queries .section-title .italic { color: var(--gold); }
+  .queries .section-lead { color: rgba(249,244,234,0.78); position: relative; }
+
+  .query-grid {
+    margin-top: 48px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    position: relative;
+  }
+  @media (max-width: 760px) { .query-grid { grid-template-columns: 1fr; } }
+  .query {
+    background: var(--paper); color: var(--ink);
+    border: 2px solid var(--gold); padding: 20px 22px;
+    display: flex; gap: 16px; align-items: flex-start;
+    transition: transform 0.15s ease;
+  }
+  .query:hover { transform: translate(-2px, -2px); }
+  .query-num {
+    flex-shrink: 0; width: 36px; height: 36px;
+    background: var(--navy); color: var(--gold);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 14px;
+  }
+  .query.veijal .query-num { background: var(--coral); color: var(--cream); }
+  .query-content { flex: 1; }
+  .query-q { font-family: 'Fraunces', serif; font-weight: 700; font-size: 16px; color: var(--navy); line-height: 1.3; }
+  .query-tag { margin-top: 8px; display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); background: var(--navy); padding: 3px 8px; border-radius: 99px; }
+  .query.veijal .query-tag { background: var(--coral); color: var(--cream); }
+
+  .query-cta {
+    margin-top: 36px; padding: 24px; background: rgba(212,162,76,0.1);
+    border: 1.5px dashed var(--gold); text-align: center;
+    font-size: 14px; color: rgba(249,244,234,0.88); position: relative;
+  }
+  .query-cta strong { color: var(--gold); }
+
+  /* architecture */
+  .arch { background: var(--cream); }
+  .arch-grid {
+    margin-top: 44px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+  }
+  @media (max-width: 760px) { .arch-grid { grid-template-columns: 1fr; } }
+  .acard {
+    background: var(--paper); border: 3px solid var(--navy); padding: 26px;
+    box-shadow: var(--shadow-sm);
+  }
+  .acard h4 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--navy); }
+  .acard p { margin-top: 10px; font-size: 14px; line-height: 1.6; color: var(--ink); }
+  .acard .flow { margin-top: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .flow-node { padding: 7px 12px; background: var(--cream); border: 2px solid var(--navy); font-size: 12px; font-weight: 700; color: var(--ink); border-radius: 4px; }
+  .flow-node.milo { background: var(--gold); }
+  .flow-node.sandbox { background: var(--coral); color: var(--cream); }
+  .flow-arrow { color: var(--navy); font-weight: 900; font-size: 16px; }
+
+  /* timeline */
+  .timeline { background: var(--paper); }
+  .phases {
+    margin-top: 48px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px;
+  }
+  @media (max-width: 700px) { .phases { grid-template-columns: 1fr; } }
+  .phase {
+    background: var(--cream); border: 3px solid var(--navy); padding: 22px;
+    box-shadow: var(--shadow-sm); display: flex; flex-direction: column;
+  }
+  .phase-num { display: inline-block; padding: 3px 10px; background: var(--coral); color: var(--cream); font-size: 10px; font-weight: 800; letter-spacing: 0.1em; border-radius: 99px; align-self: flex-start; }
+  .phase h4 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 18px; color: var(--navy); margin-top: 10px; }
+  .phase .duration { font-size: 11px; color: var(--grey); font-weight: 700; margin-top: 3px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .phase p { font-size: 13px; color: var(--ink); margin-top: 12px; line-height: 1.55; flex: 1; }
+
+  /* pricing */
+  .pricing { background: var(--navy); color: var(--cream); }
+  .pricing .section-title { color: var(--cream); }
+  .pricing .section-title .italic { color: var(--gold); }
+  .pricing .section-lead { color: rgba(249,244,234,0.78); }
+  .path-grid {
+    margin-top: 44px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+  @media (max-width: 920px) { .path-grid { grid-template-columns: 1fr; } }
+  .pcard {
+    background: var(--paper); color: var(--ink);
+    border: 3px solid var(--gold); padding: 28px;
+    position: relative; display: flex; flex-direction: column;
+  }
+  .pcard.stage-1 { border-color: var(--coral); }
+  .pcard.stage-3 { background: var(--gold); border-color: var(--gold); }
+  .stage-num {
+    display: inline-block; padding: 4px 10px;
+    background: var(--navy); color: var(--gold);
+    font-size: 10px; font-weight: 800; letter-spacing: 0.12em;
+    border-radius: 99px; align-self: flex-start; margin-bottom: 14px;
+  }
+  .pcard.stage-1 .stage-num { background: var(--coral); color: var(--cream); }
+  .pcard.stage-3 .stage-num { background: var(--navy); color: var(--gold); }
+  .pcard h4 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--navy); }
+  .pcard .price { font-family: 'Fraunces', serif; font-weight: 900; font-size: 44px; color: var(--navy); margin-top: 10px; line-height: 1; }
+  .pcard .price small { font-size: 14px; font-weight: 600; color: var(--grey); }
+  .pcard.stage-3 .price small { color: rgba(11,37,69,0.7); }
+  .pcard ul { list-style: none; margin-top: 16px; flex: 1; }
+  .pcard li { padding: 8px 0 8px 22px; position: relative; font-size: 13px; color: var(--ink); border-top: 1px dashed rgba(11,37,69,0.2); }
+  .pcard li:first-child { border-top: none; }
+  .pcard li::before { content: "→"; position: absolute; left: 0; top: 8px; color: var(--coral); font-weight: 900; }
+  .pcard.stage-3 li::before { color: var(--navy); }
+  .stage-foot {
+    margin-top: 18px; padding-top: 14px; border-top: 2px dashed rgba(11,37,69,0.2);
+    font-size: 12px; font-weight: 700; color: var(--navy); letter-spacing: 0.02em;
+  }
+  .pcard.stage-3 .stage-foot { color: var(--navy); border-color: rgba(11,37,69,0.3); }
+
+  /* CTA / next steps */
+  .cta { background: var(--cream); }
+  .cta-box {
+    background: var(--coral); color: var(--cream); padding: 44px;
+    border: 3px solid var(--navy); box-shadow: var(--shadow);
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 30px; align-items: center;
+  }
+  @media (max-width: 760px) { .cta-box { grid-template-columns: 1fr; padding: 28px; } }
+  .cta-box h3 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 30px; line-height: 1.1; }
+  .cta-box p { margin-top: 10px; font-size: 15px; color: rgba(249,244,234,0.9); }
+  .cta-actions { display: flex; flex-direction: column; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 14px 22px; font-weight: 700; font-size: 14px; text-decoration: none;
+    border: 3px solid var(--navy); box-shadow: 4px 4px 0 var(--navy);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--navy); }
+  .btn.gold { background: var(--gold); color: var(--navy); }
+  .btn.cream { background: var(--cream); color: var(--navy); }
+
+  /* footer */
+  footer { background: var(--navy); color: var(--cream); padding: 48px 32px 36px; }
+  .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 36px; }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr; gap: 28px; } }
+  .footer-brand { font-family: 'Fraunces', serif; font-weight: 900; font-size: 26px; }
+  .footer-brand .x { color: rgba(249,244,234,0.5); font-weight: 400; }
+  .footer-brand .milo { color: var(--gold); font-style: italic; }
+  .footer-tagline { margin-top: 10px; font-size: 13px; color: rgba(249,244,234,0.7); max-width: 360px; line-height: 1.5; }
+  .footer-col h6 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; font-weight: 700; }
+  .footer-col a, .footer-col div { display: block; color: rgba(249,244,234,0.78); text-decoration: none; padding: 4px 0; font-size: 13px; }
+  .footer-col a:hover { color: var(--cream); }
+  .footer-bottom { max-width: 1200px; margin: 32px auto 0; padding-top: 20px; border-top: 1px solid rgba(249,244,234,0.15); font-size: 12px; color: rgba(249,244,234,0.55); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  /* closing */
+  .closing { background: var(--cream); }
+  .closing-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 44px; align-items: start; }
+  @media (max-width: 800px) { .closing-wrap { grid-template-columns: 1fr; gap: 28px; } }
+  .closing-body { font-size: 17px; line-height: 1.65; color: var(--ink); }
+  .closing-body p + p { margin-top: 16px; }
+  .closing-body strong { color: var(--navy); }
+  .closing-cards { display: grid; gap: 16px; }
+  .closing-card {
+    background: var(--paper); border: 3px solid var(--navy); padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .closing-card:nth-child(2) { background: var(--gold); }
+  .closing-card h5 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 20px; color: var(--navy); }
+  .closing-card .who { display: inline-block; padding: 3px 10px; background: var(--navy); color: var(--cream); font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 99px; margin-bottom: 10px; }
+  .closing-card:nth-child(2) .who { background: var(--coral); }
+  .closing-card p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: var(--ink); }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- topbar -->
+<nav class="topbar" id="topbar">
+  <div class="topbar-left">
+    <span class="topbar-brand">Currency Global</span>
+    <span class="topbar-x">×</span>
+    <span class="topbar-milo">Milo</span>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-date">26 May 2026</span>
+  </div>
+</nav>
+
+<!-- hero -->
+<header class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="hero-body">
+    <span class="hero-tag">Executive summary · Follow-up to today's meeting</span>
+
+    <h1 class="hero-h1">
+      You're already <span class="gold">on top of</span><br />
+      your data. Let's see <span class="underline">what else</span><br />
+      it can tell you.
+    </h1>
+
+    <p class="hero-sub">
+      A quick follow-up. You asked <strong>where the leads come from and which business types actually pay
+      off.</strong> That's the question we'd anchor the POC around. Sandbox path below, ten queries to start,
+      four-week timeline.
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">1</div>
+        <div class="stat-label">Sandbox · zero prod risk</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">10</div>
+        <div class="stat-label">Test queries</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">7 days</div>
+        <div class="stat-label">Free trial first</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Stages · easy to stop</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-meta">
+    <span><span class="dot"></span>Prepared for <strong>Veijal Popat, CEO</strong></span>
+    <span><span class="dot"></span>From Liam Rabone, Milo</span>
+  </div>
+</header>
+
+<!-- confirmed -->
+<div class="confirmed">
+  <div class="confirmed-wrap">
+    <div class="conf-card">
+      <div class="conf-tick">✓</div>
+      <div>
+        <h4>Salesforce sandbox, confirmed on our side</h4>
+        <p>
+          Spoke to <strong>Philip (our CTO)</strong> after the meeting. Salesforce's sandbox API is plug-and-play
+          for us. Read-only by default, and your production environment stays untouched throughout.
+        </p>
+        <div class="sub">You spin up the sandbox. We do the rest.</div>
+      </div>
+    </div>
+    <div class="conf-card">
+      <div class="conf-tick">✓</div>
+      <div>
+        <h4>A three-stage path, exactly as discussed</h4>
+        <p>
+          <strong>7-day trial free</strong> on Salesforce sandbox only. Then a <strong>£1,000 POC</strong>
+          to bring in the rest of your stack (deducted from year one). Then <strong>£1,500/month</strong> on a
+          12-month term if it's working.
+        </p>
+        <div class="sub">Easy to stop at any stage. Full detail in the Commercials section below.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- recap -->
+<section class="recap">
+  <div class="container">
+    <span class="eyebrow">01 · From today's conversation</span>
+    <h2 class="section-title reveal">Six things <span class="italic">we noted.</span></h2>
+    <p class="section-lead reveal">
+      A quick recap of where you are: built from the ground up, FCA-regulated, reconciled daily. And where
+      Milo could be useful on top of that.
+    </p>
+
+    <div class="recap-grid">
+      <div class="rcard reveal">
+        <div class="rcard-num">01 / FOUNDATION</div>
+        <div class="rcard-title">Salesforce, built from the ground up.</div>
+        <p class="rcard-body">Leads, accounts, customers, every FX trade logged under the right account,
+          VoIP call data integrated. Normalised tables, proper relationships. You know your data.</p>
+      </div>
+
+      <div class="rcard reveal">
+        <div class="rcard-num">02 / COMPLIANCE</div>
+        <div class="rcard-title">Daily reconciliation, no mismatches.</div>
+        <p class="rcard-body">Salesforce, accounting and bank records reconcile cleanly every day. FCA discipline
+          handles that part. Milo isn't trying to replicate reconciliation; it answers the questions
+          reconciliation isn't designed to answer.</p>
+      </div>
+
+      <div class="rcard reveal">
+        <div class="rcard-num">03 / THE GAP</div>
+        <div class="rcard-title">Reports work, but they're "a bit shit."</div>
+        <p class="rcard-body">The data's there. The reports could be quicker to build, and asked in plain
+          English instead of wrestled out of Salesforce's report builder.</p>
+      </div>
+
+      <div class="rcard reveal">
+        <div class="rcard-num">04 / NATURAL LANGUAGE</div>
+        <div class="rcard-title">Ask in English. Skip the report builder.</div>
+        <p class="rcard-body">Your Salesforce data is already clean and normalised. Milo lets you query it
+          conversationally. No field-by-field report setup, no Saturday-morning wrestle with the builder.</p>
+      </div>
+
+      <div class="rcard reveal">
+        <div class="rcard-num">05 / THE REAL QUESTION</div>
+        <div class="rcard-title">Which business types are working, and why?</div>
+        <p class="rcard-body">Your question, not ours. With everything under one roof in Salesforce, Milo can
+          rank industries, deal sizes and lead sources by yield, and tell the sales team where to focus next.</p>
+      </div>
+
+      <div class="rcard reveal">
+        <div class="rcard-num">06 / RISK POSTURE</div>
+        <div class="rcard-title">Sandbox-first, no exceptions.</div>
+        <p class="rcard-body">Production never gets touched. You spin up a Salesforce sandbox, we connect to it
+          and run the queries against your data. If the answers aren't useful, we shake hands and stop.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- queries -->
+<section class="queries">
+  <div class="container">
+    <span class="eyebrow gold">02 · Ten queries to test it with</span>
+    <h2 class="section-title reveal">Here are some <span class="italic">example queries.</span></h2>
+    <p class="section-lead reveal">
+      Here's a starter set: yours marked in coral, ours in navy. Swap, kill or rewrite any of them. We just
+      need ten that would actually change a call you'd make.
+    </p>
+
+    <div class="query-grid">
+      <div class="query veijal reveal">
+        <div class="query-num">1</div>
+        <div class="query-content">
+          <div class="query-q">Which business types convert best — and which are wasting our time?</div>
+          <span class="query-tag">Veijal · Lead quality</span>
+        </div>
+      </div>
+      <div class="query veijal reveal">
+        <div class="query-num">2</div>
+        <div class="query-content">
+          <div class="query-q">Where are our leads actually coming from, and which sources have the highest revenue per lead?</div>
+          <span class="query-tag">Veijal · Lead source</span>
+        </div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">3</div>
+        <div class="query-content">
+          <div class="query-q">Top 10 clients by FX volume this quarter vs. last — who's slowing down?</div>
+          <span class="query-tag">Client health</span>
+        </div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">4</div>
+        <div class="query-content">
+          <div class="query-q">For each salesperson: call duration vs trade revenue — where's the correlation breaking?</div>
+          <span class="query-tag">Team performance</span>
+        </div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">5</div>
+        <div class="query-content">
+          <div class="query-q">Which inbound leads went 14+ days without a follow-up touch?</div>
+          <span class="query-tag">Pipeline hygiene</span>
+        </div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">6</div>
+        <div class="query-content">
+          <div class="query-q">Average revenue per trade by client industry, and how that's shifted year on year.</div>
+          <span class="query-tag">Yield analysis</span>
+        </div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">7</div>
+        <div class="query-content">
+          <div class="query-q">Clients booked in the last 90 days who match our top 20 by lifetime value — who do they look like?</div>
+          <span class="query-tag">Lookalike modelling</span>
+        </div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">8</div>
+        <div class="query-content">
+          <div class="query-q">Which currency pairs have the widest margin spread, and where are we under-pricing?</div>
+          <span class="query-tag">Margin · FX</span>
+        </div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">9</div>
+        <div class="query-content">
+          <div class="query-q">Which dormant accounts (90+ days no trade) had high historical volume, ranked as a re-engagement priority list?</div>
+          <span class="query-tag">Win-back</span>
+        </div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">10</div>
+        <div class="query-content">
+          <div class="query-q">Inbound seed-funding conversations (USD/EUR raises) — which ones haven't been quoted yet?</div>
+          <span class="query-tag">Opportunity</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- architecture -->
+<section class="arch">
+  <div class="container">
+    <span class="eyebrow">03 · How the sandbox connection works</span>
+    <h2 class="section-title reveal">A read-only door, <span class="italic">to a copy of your data.</span></h2>
+    <p class="section-lead reveal">
+      Your production environment is never touched. Milo connects through Salesforce's standard sandbox API,
+      reads what's needed to answer the ten queries, and writes nothing back unless you turn that on.
+    </p>
+
+    <div class="arch-grid">
+      <div class="acard reveal">
+        <h4>The connection</h4>
+        <p>You spin up a Salesforce sandbox (Veijal, minimal admin lift on your side). Philip's team connects
+          Milo via the OAuth flow Salesforce provides for sandbox orgs. Half a day, max.</p>
+        <div class="flow">
+          <span class="flow-node">Salesforce prod</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node sandbox">Sandbox copy</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">OAuth API</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node milo">Milo</span>
+        </div>
+      </div>
+
+      <div class="acard reveal">
+        <h4>What comes with it</h4>
+        <p>VoIP, call data, leads, accounts and every FX trade already live inside Salesforce, so they come
+          along for free. We don't need a second integration or new permissions.</p>
+        <div class="flow">
+          <span class="flow-node sandbox">SF sandbox</span>
+          <span class="flow-arrow">⊃</span>
+          <span class="flow-node">Leads · Accounts</span>
+          <span class="flow-node">FX trades</span>
+          <span class="flow-node">VoIP call data</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- pricing -->
+<section class="pricing">
+  <div class="container">
+    <span class="eyebrow gold">04 · Commercials</span>
+    <h2 class="section-title reveal">A three-stage path. <span class="italic">Easy to stop.</span></h2>
+    <p class="section-lead reveal">
+      Free trial first to prove value on Salesforce alone. Then a paid POC to bring in the rest of your stack.
+      Then full contract only if you want it. Each stage stands on its own and is reviewed before the next.
+    </p>
+
+    <div class="path-grid">
+      <div class="pcard stage-1 reveal">
+        <span class="stage-num">Stage 01 · Trial</span>
+        <h4>7-day trial</h4>
+        <div class="price">Free <small>· 7 days</small></div>
+        <ul>
+          <li>Salesforce sandbox only · plug-and-play</li>
+          <li>10 agreed queries, run with you</li>
+          <li>NDA both ways</li>
+          <li>No fee, no commitment</li>
+        </ul>
+        <div class="stage-foot">→ Decide whether to move to POC</div>
+      </div>
+
+      <div class="pcard stage-2 reveal">
+        <span class="stage-num">Stage 02 · POC</span>
+        <h4>Proof of concept</h4>
+        <div class="price">£1,000 <small>· 2–4 weeks</small></div>
+        <ul>
+          <li>Integrate the rest of your tools and databases</li>
+          <li>Broader query set across the full stack</li>
+          <li>Heavy lifting on our side</li>
+          <li>Deducted from year-one fee if you proceed</li>
+        </ul>
+        <div class="stage-foot">→ Decide whether to move to contract</div>
+      </div>
+
+      <div class="pcard stage-3 reveal">
+        <span class="stage-num">Stage 03 · Contract</span>
+        <h4>Full contract</h4>
+        <div class="price">£1,500 <small>· per month</small></div>
+        <ul>
+          <li>12 month term</li>
+          <li>Write-back enabled (Milo dashboards inside Salesforce)</li>
+          <li>Natural-language queries · scheduled reports · ad-hoc analysis</li>
+          <li>Ongoing support: Slack, WhatsApp or Teams, plus in-person</li>
+        </ul>
+        <div class="stage-foot">→ Reviewed at the end of 12 months</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<script>
+  const progress = document.getElementById('progress');
+  const topbar = document.getElementById('topbar');
+  let lastScroll = 0;
+
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = ((scrolled / max) * 100) + '%';
+
+    if (scrolled > 600) {
+      if (scrolled > lastScroll) topbar.classList.add('hidden');
+      else topbar.classList.remove('hidden');
+    } else {
+      topbar.classList.remove('hidden');
+    }
+    lastScroll = scrolled;
+  }, { passive: true });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 50);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
