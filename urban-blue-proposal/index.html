@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Urban Blue × Milo — Proposal</title>
+<meta name="description" content="An answer layer for Peace of Mind as a Service. A proposal for Peter Zeller and the Urban Blue team." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #1E2A5A;
+    --navy-deep: #16204A;
+    --ink: #2A3550;
+    --grey: #6B7793;
+    --green: #43B97F;
+    --cyan: #36BCDE;
+    --purple: #6B40D6;
+    --orange: #EC6739;
+    --sky: #8FB8D4;
+    --mist: #F4F7FA;
+    --cloud: #E7EFF5;
+    --paper: #FFFFFF;
+    --line: #DCE6EF;
+    --shadow: 8px 8px 0 var(--navy);
+    --shadow-sm: 5px 5px 0 var(--navy);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--mist);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: 'Fraunces', serif; font-weight: 800; letter-spacing: -0.02em; }
+
+  /* pinwheel logo */
+  .pinwheel { position: relative; width: 26px; height: 26px; flex-shrink: 0; transform: rotate(12deg); }
+  .pinwheel span { position: absolute; width: 11px; height: 11px; }
+  .pinwheel .p-tl { top: 0; left: 0; background: var(--green); border-radius: 50% 50% 0 50%; }
+  .pinwheel .p-tr { top: 0; right: 0; background: var(--cyan); border-radius: 50% 50% 50% 0; }
+  .pinwheel .p-br { bottom: 0; right: 0; background: var(--orange); border-radius: 0 50% 50% 50%; }
+  .pinwheel .p-bl { bottom: 0; left: 0; background: var(--purple); border-radius: 50% 0 50% 50%; }
+
+  /* progress */
+  .progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--cyan); z-index: 1000; transition: width 0.1s linear; }
+
+  /* topbar */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: rgba(244,247,250,0.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 32px; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: transform 0.3s ease;
+  }
+  .topbar.hidden { transform: translateY(-100%); }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-brand { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 19px; color: var(--navy); letter-spacing: -0.02em; }
+  .topbar-x { color: var(--grey); font-weight: 400; }
+  .topbar-milo {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 23px; line-height: 1;
+    background: linear-gradient(90deg, #4E9BF8 0%, #8340DD 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 20px; font-size: 13px; color: var(--ink); }
+  .topbar-date { padding: 6px 12px; background: var(--navy); color: #fff; border-radius: 99px; font-weight: 600; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+  @media (max-width: 720px) { .topbar { padding: 10px 16px; } .topbar-right { font-size: 11px; gap: 10px; } }
+
+  /* hero — alpine lake */
+  .hero {
+    min-height: 96vh; position: relative; overflow: hidden;
+    padding: 140px 32px 70px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    background: linear-gradient(180deg,
+      #5E92B4 0%, #6FA0BE 22%, #86B3CC 42%, #A6C8DA 56%,
+      #7FA9C5 70%, #5C86A6 88%, #4C7693 100%);
+  }
+  .hero-sky-glow {
+    position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+    width: 700px; height: 400px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255,255,255,0.45), transparent 70%);
+    pointer-events: none;
+  }
+  .mountains { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 62%; pointer-events: none; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(30,42,90,0.30) 0%, rgba(30,42,90,0.10) 30%, transparent 55%); pointer-events: none; }
+
+  .hero-body { position: relative; z-index: 3; max-width: 1180px; margin: 0 auto; width: 100%; }
+  .hero-welcome {
+    color: rgba(255,255,255,0.92); font-size: 15px; font-weight: 600;
+    letter-spacing: 0.04em; margin-bottom: 18px;
+    text-shadow: 0 1px 12px rgba(30,42,90,0.4);
+  }
+  .hero-welcome .pin-inline { display: inline-flex; vertical-align: middle; margin-right: 8px; }
+  .hero-h1 {
+    font-family: 'Inter', sans-serif; font-weight: 800;
+    font-size: clamp(44px, 7.5vw, 100px); line-height: 1.0; letter-spacing: -0.035em;
+    color: #fff; text-shadow: 0 2px 30px rgba(30,42,90,0.35);
+  }
+  .hero-h1 .light { font-weight: 300; }
+  .hero-sub {
+    margin-top: 28px; max-width: 660px; font-size: clamp(16px, 1.5vw, 19px);
+    color: rgba(255,255,255,0.94); line-height: 1.6; font-weight: 400;
+    text-shadow: 0 1px 16px rgba(30,42,90,0.4);
+  }
+  .hero-sub strong { font-weight: 700; color: #fff; }
+
+  .hero-stats {
+    margin-top: 50px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    position: relative; z-index: 3;
+  }
+  @media (max-width: 880px) { .hero-stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(6px);
+    padding: 20px 20px 18px; border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 10px 30px rgba(30,42,90,0.18);
+  }
+  .stat-num { font-family: 'Fraunces', serif; font-weight: 900; font-size: 34px; line-height: 1; color: var(--navy); }
+  .stat:nth-child(1) .stat-num { color: var(--green); }
+  .stat:nth-child(2) .stat-num { color: var(--cyan); }
+  .stat:nth-child(3) .stat-num { color: var(--orange); }
+  .stat:nth-child(4) .stat-num { color: var(--purple); }
+  .stat-label { margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--ink); letter-spacing: 0.02em; }
+
+  .hero-meta {
+    margin-top: 44px; display: flex; gap: 22px; flex-wrap: wrap;
+    font-size: 13px; color: rgba(255,255,255,0.85); position: relative; z-index: 3;
+    text-shadow: 0 1px 10px rgba(30,42,90,0.4);
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 8px; }
+  .hero-meta .dot { width: 6px; height: 6px; background: #fff; border-radius: 50%; }
+  .hero-meta strong { color: #fff; }
+
+  /* generic */
+  section { padding: 92px 32px; }
+  .container { max-width: 1180px; margin: 0 auto; }
+  .eyebrow {
+    display: inline-block; padding: 6px 14px;
+    background: var(--navy); color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    border-radius: 99px; margin-bottom: 18px;
+  }
+  .eyebrow.cyan { background: var(--cyan); }
+  .eyebrow.green { background: var(--green); }
+  .eyebrow.purple { background: var(--purple); }
+  .eyebrow.orange { background: var(--orange); }
+  .section-title {
+    font-family: 'Fraunces', serif; font-weight: 900;
+    font-size: clamp(34px, 4.8vw, 60px); line-height: 1.05; letter-spacing: -0.025em;
+    color: var(--navy); margin-bottom: 18px;
+  }
+  .section-title .italic { font-style: italic; color: var(--cyan); }
+  .section-lead { font-size: clamp(16px, 1.5vw, 19px); max-width: 740px; color: var(--ink); line-height: 1.6; }
+  .section-lead strong { color: var(--navy); }
+
+  /* key banner */
+  .keys { background: var(--paper); border-bottom: 1px solid var(--line); padding: 56px 32px; }
+  .keys-wrap { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 800px) { .keys-wrap { grid-template-columns: 1fr; } }
+  .kcard {
+    background: var(--mist); border: 1px solid var(--line); border-radius: 16px;
+    padding: 28px; display: flex; gap: 20px;
+  }
+  .kcard .ico {
+    flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 22px; color: #fff;
+  }
+  .kcard:nth-child(1) .ico { background: var(--green); }
+  .kcard:nth-child(2) .ico { background: var(--cyan); }
+  .kcard h4 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 20px; color: var(--navy); margin-bottom: 6px; }
+  .kcard p { font-size: 14px; color: var(--ink); line-height: 1.55; }
+  .kcard p strong { color: var(--navy); }
+  .kcard .sub { margin-top: 8px; font-size: 12px; color: var(--grey); font-style: italic; }
+
+  /* recap cards */
+  .recap { background: var(--mist); }
+  .recap-grid { margin-top: 46px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 900px) { .recap-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .recap-grid { grid-template-columns: 1fr; } }
+  .rcard {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 24px;
+    box-shadow: 0 6px 20px rgba(30,42,90,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .rcard:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(30,42,90,0.10); }
+  .rcard-num { font-family: 'Fraunces', serif; font-weight: 900; font-size: 12px; letter-spacing: 0.08em; }
+  .rcard:nth-child(6n+1) .rcard-num { color: var(--green); }
+  .rcard:nth-child(6n+2) .rcard-num { color: var(--cyan); }
+  .rcard:nth-child(6n+3) .rcard-num { color: var(--purple); }
+  .rcard:nth-child(6n+4) .rcard-num { color: var(--orange); }
+  .rcard:nth-child(6n+5) .rcard-num { color: var(--green); }
+  .rcard:nth-child(6n+6) .rcard-num { color: var(--cyan); }
+  .rcard-title { font-family: 'Fraunces', serif; font-weight: 800; font-size: 21px; color: var(--navy); margin-top: 6px; line-height: 1.2; }
+  .rcard-body { margin-top: 11px; font-size: 14px; line-height: 1.6; color: var(--ink); }
+
+  /* two ways */
+  .ways { background: var(--paper); }
+  .ways-grid { margin-top: 46px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 800px) { .ways-grid { grid-template-columns: 1fr; } }
+  .way {
+    border-radius: 18px; padding: 34px 30px; position: relative; overflow: hidden;
+    border: 2px solid var(--line); background: var(--mist);
+  }
+  .way.pick { border-color: var(--cyan); background: linear-gradient(170deg, #F2FAFD, #FFFFFF); }
+  .way-badge {
+    display: inline-block; padding: 4px 12px; border-radius: 99px;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .way .way-badge { background: var(--grey); color: #fff; }
+  .way.pick .way-badge { background: var(--cyan); color: #fff; }
+  .way h4 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 26px; color: var(--navy); line-height: 1.1; }
+  .way .tag { font-size: 13px; font-weight: 700; color: var(--grey); margin-top: 4px; }
+  .way p { margin-top: 14px; font-size: 15px; line-height: 1.6; color: var(--ink); }
+  .way ul { list-style: none; margin-top: 16px; }
+  .way li { padding: 7px 0 7px 24px; position: relative; font-size: 14px; color: var(--ink); }
+  .way li::before { content: "→"; position: absolute; left: 0; top: 7px; color: var(--cyan); font-weight: 900; }
+  .way .pick-note { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--cyan); font-size: 13px; font-weight: 700; color: var(--navy); }
+
+  /* queries */
+  .queries { background: var(--navy); color: #fff; position: relative; overflow: hidden; }
+  .queries::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0); background-size: 30px 30px; }
+  .queries .section-title { color: #fff; position: relative; }
+  .queries .section-title .italic { color: var(--cyan); }
+  .queries .section-lead { color: rgba(255,255,255,0.78); position: relative; }
+  .query-grid { margin-top: 46px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; position: relative; }
+  @media (max-width: 760px) { .query-grid { grid-template-columns: 1fr; } }
+  .query {
+    background: rgba(255,255,255,0.96); border-radius: 14px; padding: 18px 20px;
+    display: flex; gap: 14px; align-items: flex-start; transition: transform 0.15s ease;
+  }
+  .query:hover { transform: translateY(-2px); }
+  .query-num {
+    flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+    background: var(--navy); color: var(--cyan);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 14px;
+  }
+  .query.peter .query-num { background: var(--cyan); color: #fff; }
+  .query-q { font-family: 'Fraunces', serif; font-weight: 700; font-size: 16px; color: var(--navy); line-height: 1.3; }
+  .query-tag { margin-top: 7px; display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey); }
+  .query.peter .query-tag { color: var(--cyan); }
+
+  /* architecture */
+  .arch { background: var(--cloud); }
+  .arch-grid { margin-top: 46px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 760px) { .arch-grid { grid-template-columns: 1fr; } }
+  .acard { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 28px; box-shadow: 0 6px 20px rgba(30,42,90,0.05); }
+  .acard h4 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 23px; color: var(--navy); }
+  .acard p { margin-top: 11px; font-size: 14px; line-height: 1.6; color: var(--ink); }
+  .acard .flow { margin-top: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .flow-node { padding: 7px 12px; background: var(--mist); border: 1px solid var(--line); border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--ink); }
+  .flow-node.milo { background: var(--cyan); color: #fff; border-color: var(--cyan); }
+  .flow-node.onprem { background: var(--green); color: #fff; border-color: var(--green); }
+  .flow-arrow { color: var(--navy); font-weight: 900; font-size: 16px; }
+
+  /* compliance */
+  .compliance {
+    margin-top: 28px; padding: 26px 28px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 6px 20px rgba(30,42,90,0.05);
+    display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; align-items: center;
+  }
+  @media (max-width: 800px) { .compliance { grid-template-columns: 1fr; gap: 22px; } }
+  .compliance-label .micro { display: inline-block; padding: 4px 10px; background: var(--purple); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 99px; }
+  .compliance-label h4 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--navy); margin-top: 12px; line-height: 1.2; }
+  .compliance-label p { margin-top: 8px; font-size: 13px; color: var(--ink); line-height: 1.55; }
+  .trust-link { display: inline-block; margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--cyan); text-decoration: none; border-bottom: 2px solid var(--cyan); padding-bottom: 1px; transition: color 0.15s ease, border-color 0.15s ease; }
+  .trust-link:hover { color: var(--navy); border-color: var(--navy); }
+  .compliance-badges { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 480px) { .compliance-badges { grid-template-columns: 1fr; } }
+  .badge { background: var(--mist); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; gap: 12px; align-items: center; }
+  .badge-mark { width: 52px; height: 52px; flex-shrink: 0; background: var(--navy); color: #fff; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 900; line-height: 1; text-align: center; }
+  .badge-mark .top { font-size: 13px; }
+  .badge-mark .bot { font-size: 10px; margin-top: 3px; font-weight: 800; letter-spacing: 0.04em; }
+  .badge-name { font-weight: 700; font-size: 14px; color: var(--navy); line-height: 1.2; }
+  .badge-status { margin-top: 4px; font-size: 12px; color: var(--green); font-weight: 700; }
+
+  /* commercials */
+  .pricing { background: var(--mist); }
+  .path-grid { margin-top: 44px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 920px) { .path-grid { grid-template-columns: 1fr; } }
+  .pcard {
+    background: var(--paper); border: 2px solid var(--line); border-radius: 18px; padding: 28px;
+    display: flex; flex-direction: column; box-shadow: 0 6px 20px rgba(30,42,90,0.05);
+  }
+  .pcard.stage-2 { border-color: var(--cyan); }
+  .pcard.stage-3 { background: linear-gradient(165deg, var(--navy), var(--navy-deep)); border-color: var(--navy); }
+  .stage-num { display: inline-block; padding: 4px 11px; background: var(--mist); color: var(--navy); font-size: 10px; font-weight: 800; letter-spacing: 0.1em; border-radius: 99px; align-self: flex-start; margin-bottom: 14px; }
+  .pcard.stage-1 .stage-num { background: var(--green); color: #fff; }
+  .pcard.stage-2 .stage-num { background: var(--cyan); color: #fff; }
+  .pcard.stage-3 .stage-num { background: rgba(255,255,255,0.15); color: var(--cyan); }
+  .pcard h4 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--navy); }
+  .pcard.stage-3 h4 { color: #fff; }
+  .pcard .price { font-family: 'Fraunces', serif; font-weight: 900; font-size: 42px; color: var(--navy); margin-top: 10px; line-height: 1; }
+  .pcard.stage-3 .price { color: #fff; }
+  .pcard .price small { font-size: 14px; font-weight: 600; color: var(--grey); }
+  .pcard.stage-3 .price small { color: rgba(255,255,255,0.6); }
+  .pcard ul { list-style: none; margin-top: 16px; flex: 1; }
+  .pcard li { padding: 8px 0 8px 22px; position: relative; font-size: 13px; color: var(--ink); border-top: 1px dashed var(--line); }
+  .pcard li:first-child { border-top: none; }
+  .pcard li::before { content: "→"; position: absolute; left: 0; top: 8px; color: var(--cyan); font-weight: 900; }
+  .pcard.stage-3 li { color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.15); }
+  .stage-foot { margin-top: 18px; padding-top: 14px; border-top: 2px dashed var(--line); font-size: 12px; font-weight: 700; color: var(--navy); }
+  .pcard.stage-3 .stage-foot { color: var(--cyan); border-color: rgba(255,255,255,0.2); }
+
+  /* footer */
+  footer { background: var(--navy); color: #fff; padding: 50px 32px 38px; }
+  .footer-grid { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 36px; }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr; gap: 28px; } }
+  .footer-brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 24px; }
+  .footer-brand .x { color: rgba(255,255,255,0.5); font-weight: 400; }
+  .footer-brand .milo { font-family: 'Fraunces', serif; font-weight: 900; font-style: italic; color: var(--cyan); }
+  .footer-tagline { margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.7); max-width: 360px; line-height: 1.5; }
+  .footer-col h6 { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); margin-bottom: 12px; font-weight: 700; }
+  .footer-col a, .footer-col div { display: block; color: rgba(255,255,255,0.78); text-decoration: none; padding: 4px 0; font-size: 13px; }
+  .footer-col a:hover { color: #fff; }
+  .footer-bottom { max-width: 1180px; margin: 32px auto 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 12px; color: rgba(255,255,255,0.55); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- topbar -->
+<nav class="topbar" id="topbar">
+  <div class="topbar-left">
+    <span class="pinwheel"><span class="p-tl"></span><span class="p-tr"></span><span class="p-br"></span><span class="p-bl"></span></span>
+    <span class="topbar-brand">urbanblue</span>
+    <span class="topbar-x">×</span>
+    <span class="topbar-milo">Milo</span>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-date">May 2026</span>
+  </div>
+</nav>
+
+<!-- hero -->
+<header class="hero">
+  <div class="hero-sky-glow"></div>
+  <svg class="mountains" viewBox="0 0 1440 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- back ridge -->
+    <polygon points="0,330 240,150 470,300 700,120 960,290 1200,160 1440,300 1440,600 0,600" fill="#6E9DBC" opacity="0.55"/>
+    <!-- mid ridge -->
+    <polygon points="0,400 200,250 430,380 680,230 920,390 1180,270 1440,390 1440,600 0,600" fill="#4F7C9D" opacity="0.7"/>
+    <!-- front ridge -->
+    <polygon points="0,470 260,360 520,460 760,340 1020,470 1280,370 1440,460 1440,600 0,600" fill="#3A6585" opacity="0.85"/>
+    <!-- lake -->
+    <rect x="0" y="470" width="1440" height="130" fill="#456F8E" opacity="0.5"/>
+  </svg>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-body">
+    <div class="hero-welcome">
+      <span class="pin-inline pinwheel" style="width:20px;height:20px;"><span class="p-tl" style="width:8px;height:8px;"></span><span class="p-tr" style="width:8px;height:8px;"></span><span class="p-br" style="width:8px;height:8px;"></span><span class="p-bl" style="width:8px;height:8px;"></span></span>
+      An answer layer for Urban Blue · proposal for Peter Zeller
+    </div>
+
+    <h1 class="hero-h1">«Peace of mind.<br /><span class="light">Now you just</span> ask.»</h1>
+
+    <p class="hero-sub">
+      You've already done the hard part — Smart Connect, the measurements, the team's knowledge captured as
+      routines. <strong>Milo is the layer on top that turns all of it into a plain answer.</strong> No more
+      conflicting indexes. No more guessing down the middle. For most of your teams, no more opening the table at all.
+    </p>
+
+  </div>
+
+  <div class="hero-meta">
+    <span><span class="dot"></span>Prepared for <strong>Peter Zeller, CEO · Urban Blue GmbH</strong></span>
+    <span><span class="dot"></span>From Liam Rabone &amp; Philip, Milo</span>
+    <span><span class="dot"></span>Following our call, 27 May 2026</span>
+  </div>
+</header>
+
+<!-- key banner -->
+<div class="keys">
+  <div class="keys-wrap">
+    <div class="kcard">
+      <div class="ico">✓</div>
+      <div>
+        <h4>Zero-cloud, on-prem ready</h4>
+        <p>
+          Your number-one requirement, confirmed. Milo runs in <strong>AWS Frankfurt</strong> for the proof of
+          concept, then <strong>deploys onto your own Linux servers in Switzerland</strong> for the ongoing
+          service. We never send data to OpenAI, Anthropic or any third-party model.
+        </p>
+        <div class="sub">Philip will align the on-site technical requirements with your team.</div>
+      </div>
+    </div>
+    <div class="kcard">
+      <div class="ico">»</div>
+      <div>
+        <h4>Prove it first, then the main contract</h4>
+        <p>
+          <strong>£1,000 POC</strong> over four weeks on a subset of your data (deducted from year one). If
+          it's for you, on-prem deployment and the <strong>£1,500/month</strong> client service layer are part
+          of the main contract that follows.
+        </p>
+        <div class="sub">If the trial data is light to connect, we'll cut the POC fee to cover cost only.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- recap -->
+<section class="recap">
+  <div class="container">
+    <span class="eyebrow">01 · From our conversation</span>
+    <h2 class="section-title reveal">What we <span class="italic">heard from you.</span></h2>
+    <p class="section-lead reveal">
+      A quick recap of Urban Blue as we understood it — so you can check we've got the picture right before
+      we talk about where Milo fits.
+    </p>
+
+    <div class="recap-grid">
+      <div class="rcard reveal">
+        <div class="rcard-num">01 / ORIGIN</div>
+        <div class="rcard-title">Born from watching teams make avoidable mistakes.</div>
+        <p class="rcard-body">A fish farm in Germany showed you how human error causes operational failures.
+          Urban Blue exists to help teams make fewer of them — anywhere more than two people run a repetitive process.</p>
+      </div>
+      <div class="rcard reveal">
+        <div class="rcard-num">02 / PLATFORM</div>
+        <div class="rcard-title">Smart Connect already does the heavy lifting.</div>
+        <p class="rcard-body">It connects to any data source, records every measurement, and captures the team's
+          knowledge through checklists and routines. Measurements plus everyday work, combined into context.</p>
+      </div>
+      <div class="rcard reveal">
+        <div class="rcard-num">03 / PHILOSOPHY</div>
+        <div class="rcard-title">AI as chief of staff, never in control.</div>
+        <p class="rcard-body">No AI touching the active systems. It responds to the team's needs and advises — a
+          reliable helping hand, not an autopilot. Milo is built the same way: it reads and answers, it never acts.</p>
+      </div>
+      <div class="rcard reveal">
+        <div class="rcard-num">04 / THE REAL PROBLEM</div>
+        <div class="rcard-title">Too many indexes, all technically right.</div>
+        <p class="rcard-body">Conflicting signals leave people guessing — one says go left, another go right, so
+          they split the difference and both are wrong. The value is condensation: evaluating what actually matters today.</p>
+      </div>
+      <div class="rcard reveal">
+        <div class="rcard-num">05 / TRUST</div>
+        <div class="rcard-title">Proven where it's hardest: research &amp; premium labs.</div>
+        <p class="rcard-body">Max Planck Institute Frankfurt, premium German labs, fruit growers in France, a fish
+          farm in Ireland. These are demanding, security-sensitive environments — and the platform holds up.</p>
+      </div>
+      <div class="rcard reveal">
+        <div class="rcard-num">06 / THE DREAM</div>
+        <div class="rcard-title">Teams that don't have to look at the table.</div>
+        <p class="rcard-body">In your words: the new insight is the simple message. "This is how it is, you don't
+          have to care about all these data points anymore." That's exactly the experience Milo is designed to deliver.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- two ways -->
+<section class="ways">
+  <div class="container">
+    <span class="eyebrow green">02 · Two ways in</span>
+    <h2 class="section-title reveal">Use it yourself, <span class="italic">or give it to your clients.</span></h2>
+    <p class="section-lead reveal">
+      Our customers tend to fall into one of two models. You leaned clearly toward the second — a service layer
+      for your clients — so that's where this proposal focuses, but the first is open to you any time.
+    </p>
+
+    <div class="ways-grid">
+      <div class="way reveal">
+        <span class="way-badge">B2B · Internal</span>
+        <h4>Milo for Urban Blue</h4>
+        <div class="tag">You interrogate your own data</div>
+        <p>You and the team use Milo to drill into platform and operational data — product decisions, support
+          patterns, which deployments need attention. This is how customers like Kellogg's and Samsung use us internally.</p>
+        <ul>
+          <li>Faster answers across all deployments at once</li>
+          <li>Spot recurring client issues before they escalate</li>
+          <li>Available whenever you want to switch it on</li>
+        </ul>
+      </div>
+
+      <div class="way pick reveal">
+        <span class="way-badge">B2B2C · Your pick</span>
+        <h4>Milo inside the Urban Blue platform</h4>
+        <div class="tag">Your clients get the answer layer</div>
+        <p>A structured reporting layer your farm and lab teams talk to directly — limited to ~20 clear,
+          repetitive questions to start. Backed by your situation database, so it already knows that a change
+          on the left has a consequence five days later on the right.</p>
+        <ul>
+          <li>~20 structured questions, not open-ended complexity</li>
+          <li>Built on your existing situation database of known challenges</li>
+          <li>Delivered as a service, on your infrastructure</li>
+        </ul>
+        <div class="pick-note">This is the model we've shaped the rest of the proposal around.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- queries -->
+<section class="queries">
+  <div class="container">
+    <span class="eyebrow cyan">03 · Example questions</span>
+    <h2 class="section-title reveal">The kind of thing <span class="italic">a team would ask each morning.</span></h2>
+    <p class="section-lead reveal">
+      A starter set in the spirit of your ~20 structured questions. Repetitive, high-value, answerable from the
+      data and the situation database. Cyan ones came straight from our conversation; swap or rewrite any of them.
+    </p>
+
+    <div class="query-grid">
+      <div class="query peter reveal">
+        <div class="query-num">1</div>
+        <div><div class="query-q">What's the one thing I should deal with this morning, before anything else?</div><span class="query-tag">Peter · the 9am question</span></div>
+      </div>
+      <div class="query peter reveal">
+        <div class="query-num">2</div>
+        <div><div class="query-q">Of today's readings, which actually matter and which are just noise?</div><span class="query-tag">Peter · condensation</span></div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">3</div>
+        <div><div class="query-q">Is anything trending toward a problem in the next 3–5 days?</div><span class="query-tag">Early warning</span></div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">4</div>
+        <div><div class="query-q">My indexes disagree right now — which one should I trust today, and why?</div><span class="query-tag">Conflicting signals</span></div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">5</div>
+        <div><div class="query-q">What changed in the 48 hours before the last incident here?</div><span class="query-tag">Situation database</span></div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">6</div>
+        <div><div class="query-q">Has this pattern led to a problem before — and what did we do about it?</div><span class="query-tag">Known challenges</span></div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">7</div>
+        <div><div class="query-q">Is anything drifting outside the range the team set in the checklist?</div><span class="query-tag">Routines &amp; checklists</span></div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">8</div>
+        <div><div class="query-q">Which of my sites is most at risk this week, and what's driving it?</div><span class="query-tag">Across deployments</span></div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">9</div>
+        <div><div class="query-q">What's stable and safe to ignore today?</div><span class="query-tag">Peace of mind</span></div>
+      </div>
+      <div class="query reveal">
+        <div class="query-num">10</div>
+        <div><div class="query-q">If I make this change now, what's the likely knock-on effect, and when?</div><span class="query-tag">Cause &amp; consequence</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- architecture -->
+<section class="arch">
+  <div class="container">
+    <span class="eyebrow orange">04 · How it fits, and where it runs</span>
+    <h2 class="section-title reveal">An answer layer on top, <span class="italic">on your infrastructure.</span></h2>
+    <p class="section-lead reveal">
+      Milo sits above Smart Connect and your situation database. It reads the context you've already built and
+      answers questions. It never controls a system, and for the ongoing service it lives entirely on your servers.
+    </p>
+
+    <div class="arch-grid">
+      <div class="acard reveal">
+        <h4>How a question gets answered</h4>
+        <p>A team member asks in plain language. Milo reads the live measurements and the team's captured
+          knowledge, weighs what matters, and replies with a simple answer — not a wall of indexes.</p>
+      </div>
+
+      <div class="acard reveal">
+        <h4>Where it runs</h4>
+        <p>The POC runs in AWS Frankfurt — data stays in that environment, never touching a third-party model.
+          For the ongoing service, Milo is deployed onto your own Linux servers in Switzerland. Zero-cloud, as you require.</p>
+      </div>
+    </div>
+
+    <div class="compliance reveal">
+      <div class="compliance-label">
+        <span class="micro">Trust &amp; security</span>
+        <h4>Independently audited.</h4>
+        <p>For the research labs and universities in your base, this matters. Both certifications, full reports,
+          policies and our subprocessor list are on the trust centre Philip built.</p>
+        <a href="https://trust.milo.ai/" target="_blank" rel="noopener" class="trust-link">View trust.milo.ai →</a>
+      </div>
+      <div class="compliance-badges">
+        <div class="badge">
+          <div class="badge-mark"><span class="top">SOC 2</span><span class="bot">TYPE I</span></div>
+          <div><div class="badge-name">SOC 2 Type I</div><div class="badge-status">✓ Compliant</div></div>
+        </div>
+        <div class="badge">
+          <div class="badge-mark"><span class="top">ISO</span><span class="bot">27001</span></div>
+          <div><div class="badge-name">ISO 27001</div><div class="badge-status">✓ Compliant</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- commercials -->
+<section class="pricing">
+  <div class="container">
+    <span class="eyebrow purple">05 · Commercials</span>
+    <h2 class="section-title reveal">Prove it first, <span class="italic">then the main contract.</span></h2>
+    <p class="section-lead reveal">
+      One paid POC to prove the interaction value on a subset of data. If it's for you, everything else —
+      on-prem deployment and the ongoing client service — is part of the main contract that follows. If it
+      isn't, we shake hands and part ways.
+    </p>
+
+    <div class="path-grid">
+      <div class="pcard stage-1 reveal">
+        <span class="stage-num">Step 01 · POC</span>
+        <h4>Proof of concept</h4>
+        <div class="price">£1,000 <small>· 4 weeks</small></div>
+        <ul>
+          <li>A subset of your data, the part you choose</li>
+          <li>We do the integration, onboarding and training</li>
+          <li>Runs in AWS Frankfurt — no third-party model</li>
+          <li>Deducted from year one · reduced to cost if data is light</li>
+        </ul>
+        <div class="stage-foot">→ You decide whether to proceed</div>
+      </div>
+
+      <div class="pcard stage-3 reveal">
+        <span class="stage-num">Step 02 · Main contract</span>
+        <h4>Deploy on-prem &amp; run the service</h4>
+        <div class="price">£1,500 <small>· per month</small></div>
+        <ul>
+          <li>On-prem deployment on your Swiss Linux servers, scoped with Philip — zero-cloud, included in onboarding</li>
+          <li>The ~20-question answer layer for your clients, built on your situation database</li>
+          <li>Ongoing support via Slack, WhatsApp or Teams</li>
+          <li>Rolls out from an agile team, not the whole base at once</li>
+        </ul>
+        <div class="stage-foot">→ The main contract, post-POC · reviewed as it scales</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const progress = document.getElementById('progress');
+  const topbar = document.getElementById('topbar');
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = ((scrolled / max) * 100) + '%';
+    if (scrolled > 600) {
+      if (scrolled > lastScroll) topbar.classList.add('hidden');
+      else topbar.classList.remove('hidden');
+    } else { topbar.classList.remove('hidden'); }
+    lastScroll = scrolled;
+  }, { passive: true });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
