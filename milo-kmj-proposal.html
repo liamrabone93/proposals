@@ -17,7 +17,7 @@
 }
 
 html{font-size:16px;scroll-behavior:smooth}
-body{font-family:'DM Sans',system-ui,sans-serif;background:#F8F0FF;color:#1A0A2E;
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--white);
      line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
 /* ─── KEYFRAMES ──────────────────────────────────────── */
@@ -277,72 +277,7 @@ tbody tr:hover td.mc{background:rgba(124,58,237,.12)}
 }
 </style>
 
-<style id="brand-light-override">
-/* ── Brand light theme override ── */
-body { background:#F8F0FF !important; color:#1A0A2E !important; }
-
-.section .sec-label,
-.demo-title-wrap .sec-label { color:#5B21B6 !important; }
-.section .sec-title { color:#1A0A2E !important; font-family:'Fraunces',Georgia,serif; }
-.section .sec-sub { color:rgba(26,10,46,.55) !important; }
-
-.section .p-card {
-  background:rgba(124,58,237,.06) !important;
-  border:1px solid rgba(124,58,237,.18) !important;
-}
-.section .p-card h4 { color:#1A0A2E !important; }
-.section .p-card p { color:rgba(26,10,46,.6) !important; }
-.section .p-num { color:#5B21B6 !important; }
-
-.section .case-card {
-  background:rgba(124,58,237,.06) !important;
-  border:1px solid rgba(124,58,237,.15) !important;
-}
-.section .case-stat { color:#5B21B6 !important; }
-.section .case-label { color:rgba(26,10,46,.4) !important; text-transform:uppercase; letter-spacing:.12em; font-size:.68rem; font-weight:700; }
-.section .case-card p { color:rgba(26,10,46,.65) !important; }
-.section .case-card p strong { color:#1A0A2E !important; }
-
-#compare { background:#08030F !important; }
-.compare-inner .sec-title { color:var(--white) !important; }
-.compare-inner .sec-label { color:#a78bfa !important; }
-
-.section .p-tier {
-  background:#F8F0FF !important;
-  border:1.5px solid rgba(124,58,237,.2) !important;
-  box-shadow:0 2px 12px rgba(0,0,0,.05);
-}
-.section .p-tier.featured {
-  background:rgba(124,58,237,.08) !important;
-  border-color:rgba(124,58,237,.4) !important;
-}
-.section .p-name { color:rgba(26,10,46,.4) !important; }
-.section .p-price { color:#5B21B6 !important; }
-.section .p-note { color:rgba(26,10,46,.4) !important; }
-.section .p-tier ul li { color:rgba(26,10,46,.7) !important; border-top:1px solid rgba(124,58,237,.1) !important; }
-.section .p-tier ul li::before { color:#5B21B6 !important; }
-.section .p-note2 { background:rgba(124,58,237,.08) !important; border-color:rgba(124,58,237,.2) !important; }
-.section .p-note2 strong { color:#5B21B6 !important; }
-.section .featured-tag { background:#5B21B6 !important; }
-
-.section .ns-card {
-  background:#F8F0FF !important;
-  border:1px solid rgba(124,58,237,.18) !important;
-  box-shadow:0 2px 8px rgba(0,0,0,.05);
-}
-.section .ns-card.hi {
-  background:rgba(124,58,237,.08) !important;
-  border-color:rgba(124,58,237,.35) !important;
-}
-.section .ns-phase { color:#5B21B6 !important; }
-.section .ns-card h4 { color:#1A0A2E !important; }
-.section .ns-card p { color:rgba(26,10,46,.65) !important; }
-
-.stats-strip { background:#100519 !important; }
-.s-num { color:#a78bfa !important; }
-.s-label { color:rgba(255,255,255,.6) !important; }
-.stats-strip .s-item+.s-item { border-left-color:rgba(255,255,255,.12) !important; }
-
+<style>
 ::selection { background:#5B21B6; color:white; }
 </style>
 </head>
