@@ -313,6 +313,75 @@
       letter-spacing: .02em;
     }
 
+    /* PRICE DUO (POC + ongoing together) */
+    .price-duo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .price-card {
+      border-radius: 18px;
+      padding: 26px 28px;
+      border: 1px solid var(--blue-pale);
+      background: linear-gradient(180deg, #fff 0%, var(--blue-faint) 100%);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .price-card.featured {
+      color: var(--white);
+      border: 1px solid transparent;
+      background:
+        radial-gradient(500px 280px at 90% -40%, rgba(120,180,255,.45) 0%, transparent 60%),
+        linear-gradient(150deg, var(--navy) 0%, var(--navy-2) 55%, var(--blue-deep) 100%);
+      box-shadow: var(--shadow-md);
+    }
+    .price-card.featured::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size: 20px 20px;
+      mask-image: radial-gradient(300px 160px at 100% 0%, #000, transparent 70%);
+      -webkit-mask-image: radial-gradient(300px 160px at 100% 0%, #000, transparent 70%);
+    }
+    .pc-tag {
+      position: relative; z-index: 1;
+      font-size: .64rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 14px;
+    }
+    .price-card.featured .pc-tag { color: var(--blue-light); }
+    .pc-amount {
+      position: relative; z-index: 1;
+      font-family: 'Clash Display', 'Inter', sans-serif;
+      font-size: 2.7rem; font-weight: 700;
+      letter-spacing: -.03em; line-height: 1;
+      color: var(--ink);
+    }
+    .pc-amount span { font-size: 1.1rem; font-weight: 600; color: var(--ink-mute); letter-spacing: 0; }
+    .price-card.featured .pc-amount {
+      background: linear-gradient(180deg, #fff 0%, #BFD8FF 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .price-card.featured .pc-amount span { -webkit-text-fill-color: rgba(255,255,255,.6); color: rgba(255,255,255,.6); }
+    .pc-label {
+      position: relative; z-index: 1;
+      font-size: .76rem; color: var(--ink-mute);
+      margin-top: 6px; font-weight: 500;
+    }
+    .price-card.featured .pc-label { color: rgba(255,255,255,.62); }
+    .pc-desc {
+      position: relative; z-index: 1;
+      font-size: .82rem; line-height: 1.55;
+      color: var(--ink-soft);
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--blue-pale);
+    }
+    .price-card.featured .pc-desc { color: rgba(255,255,255,.78); border-top-color: rgba(255,255,255,.18); }
+
     /* INCLUDED LIST */
     .included-grid {
       display: grid;
@@ -664,6 +733,7 @@
       .hero h1 { font-size: 2rem; }
       .section-title { font-size: 1.4rem; }
       .included-grid { grid-template-columns: 1fr; }
+      .price-duo { grid-template-columns: 1fr; }
       .poc-card { flex-direction: column; align-items: flex-start; }
       .poc-price { text-align: left; }
       .poc-price .amount { font-size: 2.8rem; }
@@ -709,19 +779,8 @@
     <div class="section-label">Getting Started</div>
     <h2 class="section-title">Proof of concept: everything you need to see the value</h2>
     <p class="section-body">
-      We start with a focused proof of concept: your data connected, workflows automated, team using it on real client data. If it delivers, we go ongoing. If not, you've committed to nothing significant.
+      We start with a focused proof of concept: your data connected, workflows automated, team using it on real client data. If it delivers, we go ongoing. If not, you've committed to nothing significant. Pricing is at the end; here's what's included.
     </p>
-
-    <div class="poc-card">
-      <div class="poc-left">
-        <h2>Proof of Concept</h2>
-        <p>Everything below included. No extras, no surprises. One fixed cost to prove the value.</p>
-      </div>
-      <div class="poc-price">
-        <div class="amount">£1,000</div>
-        <div class="label">one-time POC fee</div>
-      </div>
-    </div>
 
     <div class="included-grid">
       <div class="inc-item">
@@ -934,70 +993,28 @@
     </table>
   </section>
 
-  <!-- PATH FORWARD -->
+  <!-- INVESTMENT -->
   <section>
-    <div class="section-label">After the POC</div>
-    <h2 class="section-title">The ongoing arrangement</h2>
+    <div class="section-label">Investment</div>
+    <h2 class="section-title">Simple, all-inclusive pricing</h2>
     <p class="section-body">
-      Once the POC proves value, we move to a simple annual arrangement. Everything continues, same integrations, support, and data access, plus any workflows built during the trial.
+      Start with the POC. Once it proves value, move to the monthly arrangement. Everything above is included in both, no per-seat fees, no usage bills, no surprises.
     </p>
 
-    <div class="poc-card">
-      <div class="poc-left">
-        <h2>Everything included, ongoing</h2>
-        <p>One fixed monthly cost. No per-seat fees, no usage bills, no surprises.</p>
+    <div class="price-duo">
+      <div class="price-card">
+        <div class="pc-tag">Step 1 · Proof of Concept</div>
+        <div class="pc-amount">£1,000</div>
+        <div class="pc-label">one-time</div>
+        <p class="pc-desc">Onboarding, DataDive integration, and all automations live on your real data. Unlimited users and data. Prove the value with no significant commitment.</p>
       </div>
-      <div class="poc-price">
-        <div class="amount">£1,000</div>
-        <div class="label">per month · annual</div>
-      </div>
-    </div>
-
-    <div class="included-grid">
-      <div class="inc-item">
-        <div class="inc-check">✓</div>
-        <div class="inc-text">
-          <h4>All integrations</h4>
-          <p>Every integration connected during the POC, all maintained.</p>
-        </div>
-      </div>
-      <div class="inc-item">
-        <div class="inc-check">✓</div>
-        <div class="inc-text">
-          <h4>Unlimited users</h4>
-          <p>The whole team on one platform, no per-seat cost.</p>
-        </div>
-      </div>
-      <div class="inc-item">
-        <div class="inc-check">✓</div>
-        <div class="inc-text">
-          <h4>Unlimited data</h4>
-          <p>All clients, all channels, no caps or tiers as you grow.</p>
-        </div>
-      </div>
-      <div class="inc-item">
-        <div class="inc-check">✓</div>
-        <div class="inc-text">
-          <h4>DataDive, maintained</h4>
-          <p>The bespoke API connection stays live, updated if anything changes on their end.</p>
-        </div>
-      </div>
-      <div class="inc-item">
-        <div class="inc-check">✓</div>
-        <div class="inc-text">
-          <h4>New integrations &amp; workflows</h4>
-          <p>As you add clients or tools, new connections and automations are built in.</p>
-        </div>
-      </div>
-      <div class="inc-item">
-        <div class="inc-check">✓</div>
-        <div class="inc-text">
-          <h4>Continued support</h4>
-          <p>Direct access to the team, same as the POC.</p>
-        </div>
+      <div class="price-card featured">
+        <div class="pc-tag">Step 2 · Ongoing</div>
+        <div class="pc-amount">£1,000<span>/mo</span></div>
+        <div class="pc-label">billed annually</div>
+        <p class="pc-desc">Everything continues, maintained and supported, plus new integrations and workflows as you grow.</p>
       </div>
     </div>
-
   </section>
 
   <!-- FOOTER -->
